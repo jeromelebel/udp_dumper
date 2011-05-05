@@ -1,0 +1,205 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		021C71741368B0F30005C910 /* UDPClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 021C71721368B0F30005C910 /* UDPClient.cpp */; };
+		023C64FB1366673E0042330E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 023C64FA1366673E0042330E /* main.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		023C64F41366673D0042330E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		021C71721368B0F30005C910 /* UDPClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UDPClient.cpp; sourceTree = "<group>"; };
+		021C71731368B0F30005C910 /* UDPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDPClient.h; sourceTree = "<group>"; };
+		021C71761368B73F0005C910 /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
+		023C64F61366673E0042330E /* udp_dumper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = udp_dumper; sourceTree = BUILT_PRODUCTS_DIR; };
+		023C64FA1366673E0042330E /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		023C64F31366673D0042330E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		023C64EB1366673D0042330E = {
+			isa = PBXGroup;
+			children = (
+				023C64F91366673E0042330E /* sources */,
+				023C64F71366673E0042330E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		023C64F71366673E0042330E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				023C64F61366673E0042330E /* udp_dumper */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		023C64F91366673E0042330E /* sources */ = {
+			isa = PBXGroup;
+			children = (
+				023C64FA1366673E0042330E /* main.cpp */,
+				021C71761368B73F0005C910 /* main.h */,
+				021C71721368B0F30005C910 /* UDPClient.cpp */,
+				021C71731368B0F30005C910 /* UDPClient.h */,
+			);
+			path = sources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		023C64F51366673D0042330E /* udp_dumper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 023C64FF1366673E0042330E /* Build configuration list for PBXNativeTarget "udp_dumper" */;
+			buildPhases = (
+				023C64F21366673D0042330E /* Sources */,
+				023C64F31366673D0042330E /* Frameworks */,
+				023C64F41366673D0042330E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = udp_dumper;
+			productName = udp_dumper;
+			productReference = 023C64F61366673E0042330E /* udp_dumper */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		023C64ED1366673D0042330E /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 023C64F01366673D0042330E /* Build configuration list for PBXProject "udp_dumper" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 023C64EB1366673D0042330E;
+			productRefGroup = 023C64F71366673E0042330E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				023C64F51366673D0042330E /* udp_dumper */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		023C64F21366673D0042330E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				023C64FB1366673E0042330E /* main.cpp in Sources */,
+				021C71741368B0F30005C910 /* UDPClient.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		023C64FD1366673E0042330E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		023C64FE1366673E0042330E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		023C65001366673E0042330E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		023C65011366673E0042330E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		023C64F01366673D0042330E /* Build configuration list for PBXProject "udp_dumper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				023C64FD1366673E0042330E /* Debug */,
+				023C64FE1366673E0042330E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		023C64FF1366673E0042330E /* Build configuration list for PBXNativeTarget "udp_dumper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				023C65001366673E0042330E /* Debug */,
+				023C65011366673E0042330E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 023C64ED1366673D0042330E /* Project object */;
+}
