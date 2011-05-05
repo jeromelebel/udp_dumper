@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		021C71741368B0F30005C910 /* UDPClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 021C71721368B0F30005C910 /* UDPClient.cpp */; };
-		023C64FB1366673E0042330E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 023C64FA1366673E0042330E /* main.cpp */; };
+		029D07971372305D00AE4CCF /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 029D07931372305D00AE4CCF /* main.cpp */; };
+		029D07981372305D00AE4CCF /* UDPClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 029D07951372305D00AE4CCF /* UDPClient.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,11 +24,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		021C71721368B0F30005C910 /* UDPClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UDPClient.cpp; sourceTree = "<group>"; };
-		021C71731368B0F30005C910 /* UDPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDPClient.h; sourceTree = "<group>"; };
-		021C71761368B73F0005C910 /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		023C64F61366673E0042330E /* udp_dumper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = udp_dumper; sourceTree = BUILT_PRODUCTS_DIR; };
-		023C64FA1366673E0042330E /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		029D07931372305D00AE4CCF /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		029D07941372305D00AE4CCF /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
+		029D07951372305D00AE4CCF /* UDPClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UDPClient.cpp; sourceTree = "<group>"; };
+		029D07961372305D00AE4CCF /* UDPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDPClient.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,7 +45,10 @@
 		023C64EB1366673D0042330E = {
 			isa = PBXGroup;
 			children = (
-				023C64F91366673E0042330E /* sources */,
+				029D07931372305D00AE4CCF /* main.cpp */,
+				029D07941372305D00AE4CCF /* main.h */,
+				029D07951372305D00AE4CCF /* UDPClient.cpp */,
+				029D07961372305D00AE4CCF /* UDPClient.h */,
 				023C64F71366673E0042330E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -56,17 +59,6 @@
 				023C64F61366673E0042330E /* udp_dumper */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		023C64F91366673E0042330E /* sources */ = {
-			isa = PBXGroup;
-			children = (
-				023C64FA1366673E0042330E /* main.cpp */,
-				021C71761368B73F0005C910 /* main.h */,
-				021C71721368B0F30005C910 /* UDPClient.cpp */,
-				021C71731368B0F30005C910 /* UDPClient.h */,
-			);
-			path = sources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -116,8 +108,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				023C64FB1366673E0042330E /* main.cpp in Sources */,
-				021C71741368B0F30005C910 /* UDPClient.cpp in Sources */,
+				029D07971372305D00AE4CCF /* main.cpp in Sources */,
+				029D07981372305D00AE4CCF /* UDPClient.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
