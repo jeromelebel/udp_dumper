@@ -6,6 +6,7 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
+#define _WITH_GETLINE
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/socket.h>
@@ -14,12 +15,14 @@
 #include <sys/types.h>
 #include <arpa/inet.h>
 #include <pthread.h>
+#include <string.h>
 #include "UDPClient.h"
 #include "main.h"
 
-int _main_socket;
+#define CHAR_PER_LINE 16
+
+int _server_socket = -1;
 struct sockaddr_in _main_listen_address;
-int _dump_flag = 0;
 char *buffer;
 int highest_socket;
 
@@ -44,7 +47,13 @@ void test_receive(int socket)
 
 void print_usage(const char *executable)
 {
-	fprintf(stderr, "%s [-d] listen_port destionation_ip destination_port\n", executable);
+    fprintf(stdout, "\n");
+    fprintf(stdout, "%s [-d] listen listen_port\n", executable);
+    fprintf(stdout, "       To listen on port\n");
+    fprintf(stdout, "%s [-d] send destionation_ip destination_port\n", executable);
+    fprintf(stdout, "       To send Hello to this server\n");
+    fprintf(stdout, "%s [-d] relay listen_port destionation_ip destination_port\n", executable);
+    fprintf(stdout, "       To be a relay between who ever send a packet, and the destination\n");
 }
 
 void dump_buffer(const void *buffer, ssize_t size)
@@ -82,13 +91,17 @@ void dump_buffer(const void *buffer, ssize_t size)
 		char_count++;
 		if (char_count == CHAR_PER_LINE || ii == size) {
 			while (char_count < CHAR_PER_LINE) {
+                if (char_count % 4 == 0) {
+                    line_hex_cursor[0] = ' ';
+                    line_hex_cursor++;
+                }
 				line_hex_cursor[0] = ' ';
 				line_hex_cursor++;
 				line_hex_cursor[0] = ' ';
 				line_hex_cursor++;
 				line_char_cursor[0] = ' ';
-				line_char_cursor++;
-				char_count++;
+                line_char_cursor++;
+                char_count++;
 			}
 			line_hex_cursor[0] = 0;
 			line_char_cursor[0] = 0;
@@ -98,18 +111,23 @@ void dump_buffer(const void *buffer, ssize_t size)
   	}
 }
 
-UDPClient *process_client_request(struct sockaddr_in server_address)
+UDPClient *process_client_request(struct sockaddr_in *server_address, bool dump_flag)
 {
     struct sockaddr_in client_address;
     socklen_t size = sizeof(client_address);
     UDPClient *result = NULL;
     ssize_t read_bytes;
     
-    read_bytes = recvfrom(_main_socket, buffer, BUFFER_SIZE, 0, (struct sockaddr *)&client_address, &size);
+    read_bytes = recvfrom(_server_socket, buffer, BUFFER_SIZE, 0, (struct sockaddr *)&client_address, &size);
     
     if (read_bytes > 0) {
-        result = new UDPClient(client_address, server_address);
-        result->send_to_server(buffer, read_bytes);
+        printf("Received %ld from %s\n", read_bytes, inet_ntoa(client_address.sin_addr));
+        if (server_address) {
+            result = new UDPClient(client_address, *server_address, _server_socket, dump_flag);
+            result->send_to_server(buffer, read_bytes);
+        } else if (dump_flag) {
+            dump_buffer(buffer, read_bytes);
+        }
     }
     return result;
 }
@@ -191,7 +209,7 @@ void clean_up_clients()
     time_t current_time;
     
     time(&current_time);
-    highest_socket = _main_socket;
+    highest_socket = _server_socket;
     while (cursor) {
         if (current_time - cursor->_udpClient->last_activity() > TIME_OUT_ACTIVITY) {
             cursor = _remove_client_element(cursor);
@@ -204,7 +222,7 @@ void clean_up_clients()
     }
 }
 
-void server_with_select(struct sockaddr_in server_address)
+void server_with_select(struct sockaddr_in *destination, bool dump_flag)
 {
     fd_set active_fd_set, read_fd_set;
     struct timeval timeout;
@@ -212,8 +230,8 @@ void server_with_select(struct sockaddr_in server_address)
     int ii;
     
     FD_ZERO(&active_fd_set);
-    FD_SET(_main_socket, &active_fd_set);
-    highest_socket = _main_socket;
+    FD_SET(_server_socket, &active_fd_set);
+    highest_socket = _server_socket;
     while (1) {
         read_fd_set = active_fd_set;
         timeout.tv_sec = 1;
@@ -222,10 +240,10 @@ void server_with_select(struct sockaddr_in server_address)
         readsocks = select(highest_socket + 1, &read_fd_set, NULL, NULL, &timeout);
         for (ii = 0; ii < highest_socket + 1; ++ii) {
             if (FD_ISSET(ii, &read_fd_set)) {
-                if (ii == _main_socket) {
+                if (ii == _server_socket) {
                     UDPClient *new_client;
                     
-                    new_client = process_client_request(server_address);
+                    new_client = process_client_request(destination, dump_flag);
                     if (new_client) {
                         FD_SET(new_client->server_socket(), &active_fd_set);
                         add_client(new_client);
@@ -244,16 +262,50 @@ void server_with_select(struct sockaddr_in server_address)
     }
 }
 
+struct sockaddr_in socket_address(const char *address, int port)
+{
+    struct sockaddr_in result;
+    
+    result.sin_family = AF_INET;
+    if (address) {
+        result.sin_addr.s_addr = inet_addr(address);
+    } else {
+        result.sin_addr.s_addr = INADDR_ANY;
+    }
+    result.sin_port = htons(port);
+    return result;
+}
+
+int open_server_socket(int port)
+{
+    sockaddr_in server_address;
+    struct timeval tv;
+    int socket_result;
+    
+    server_address = socket_address(NULL, port);
+    socket_result = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);
+    tv.tv_sec = TIME_OUT_ACTIVITY;
+    tv.tv_usec = 0;
+    setsockopt(socket_result, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv,  sizeof(tv));
+    if (bind(socket_result, (struct sockaddr *)&server_address, sizeof(server_address)) == -1) {
+        fprintf(stderr, "can't listen to %s:%d\n", inet_ntoa(server_address.sin_addr), ntohs(server_address.sin_port));
+        exit(EXIT_FAILURE);
+    }
+    printf("listening from %s:%d\n", inet_ntoa(server_address.sin_addr), ntohs(server_address.sin_port));
+    return socket_result;
+}
+
 int main(int argc, char *argv[])
 {
 	int opt;
-	struct sockaddr_in server_address;
-    struct timeval tv;
+    bool dump_flag = false;
 	
+    buffer = (char *)malloc(BUFFER_SIZE);
+    
 	while ((opt = getopt(argc, argv, "d")) != -1) {
 		switch (opt) {
 			case 'd':
-				_dump_flag = 1;
+				dump_flag = true;
 				break;
 			default:
 				print_usage(argv[0]);
@@ -261,33 +313,40 @@ int main(int argc, char *argv[])
 		}
 	}
 	
-	if (argc - optind != 3) {
-		fprintf(stderr, "need to have 3 arguments at the end\n");
+	if (argc - optind < 2 || argc - optind > 4) {
+		fprintf(stderr, "wrong argument count\n");
 		print_usage(argv[0]);
 		exit(EXIT_FAILURE);
 	}
 	
-    buffer = (char *)malloc(BUFFER_SIZE);
-	_main_socket = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);
-	_main_listen_address.sin_family = AF_INET;
-	_main_listen_address.sin_addr.s_addr = inet_addr("0.0.0.0");
-	_main_listen_address.sin_port = htons(atoi(argv[optind]));
-    tv.tv_sec = TIME_OUT_ACTIVITY;
-    tv.tv_usec = 0;
-    setsockopt(_main_socket, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv,  sizeof(tv));
-	if (bind(_main_socket, (struct sockaddr *)&_main_listen_address, sizeof(_main_listen_address)) == -1) {
-		fprintf(stderr, "can't listen to %s:%d\n", inet_ntoa(_main_listen_address.sin_addr), ntohs(_main_listen_address.sin_port));
-		exit(EXIT_FAILURE);
-	}
-    
-	server_address.sin_family = AF_INET;
-	server_address.sin_addr.s_addr = inet_addr(argv[optind + 1]);
-	server_address.sin_port = htons(atoi(argv[optind + 2]));
-
-    printf("listening to %s:%d\n", inet_ntoa(_main_listen_address.sin_addr), ntohs(_main_listen_address.sin_port));
-    printf("sending to %s:%d\n", inet_ntoa(server_address.sin_addr), ntohs(server_address.sin_port));
-    
-    server_with_select(server_address);
+    if (strcmp(argv[optind], "listen") == 0) {
+        optind++;
+        _server_socket = open_server_socket(atoi(argv[optind]));
+        server_with_select(NULL, dump_flag);
+    } else if (strcmp(argv[optind], "send") == 0) {
+        UDPClient *client;
+        struct sockaddr_in from_address, to_address;
+        size_t len;
+        ssize_t read;
+        
+        optind++;
+        
+        to_address = socket_address(argv[optind], atoi(argv[optind + 1]));
+        from_address = socket_address(NULL, atoi(argv[optind + 1]));
+        
+        read = getline(&buffer, &len, stdin);
+        if (read > 0) {
+            client = new UDPClient(from_address, to_address, -1, dump_flag);
+            client->send_to_server(buffer, read);
+        }
+    } else if (strcmp(argv[optind], "relay") == 0) {
+        struct sockaddr_in to_address;
+        
+        optind++;
+        _server_socket = open_server_socket(atoi(argv[optind]));
+        to_address = socket_address(argv[optind + 1], atoi(argv[optind + 2]));
+        server_with_select(&to_address, dump_flag);
+    }
     
 	return 0;
 }

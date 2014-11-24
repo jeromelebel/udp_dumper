@@ -1,4 +1,4 @@
-CC=gcc
+CC=c++
 CFLAGS=
 LDFLAGS=-lstdc++
 EXEC=udp_dumper

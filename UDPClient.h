@@ -19,10 +19,12 @@ protected:
     struct sockaddr_in _client_address;
     struct sockaddr_in _server_address;
     int _socket;
+    int _server_socket;
     time_t _last_activity_time;
+    bool _dump_buffer;
     
 public:
-    UDPClient(struct sockaddr_in client_address, struct sockaddr_in server_address);
+    UDPClient(struct sockaddr_in client_address, struct sockaddr_in server_address, int server_socket, bool dump_buffer);
     ~UDPClient();
     
     struct sockaddr_in client_address();

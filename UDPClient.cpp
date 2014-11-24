@@ -15,13 +15,15 @@
 #include <pthread.h>
 #include "main.h"
 
-UDPClient::UDPClient(struct sockaddr_in client_address, struct sockaddr_in server_address)
+UDPClient::UDPClient(struct sockaddr_in client_address, struct sockaddr_in server_address, int server_socket, bool dump_buffer)
 {
     struct sockaddr_in server_listen_address;
     struct timeval tv;
     
+    _dump_buffer = dump_buffer;
     _client_address = client_address;
     _server_address = server_address;
+    _server_socket = server_socket;
 	_socket = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);
 	server_listen_address.sin_family = AF_INET;
 	server_listen_address.sin_addr.s_addr = inet_addr("0.0.0.0");
@@ -54,7 +56,7 @@ void UDPClient::send_to_server(const void *buffer, ssize_t size)
 {
     sendto(_socket, buffer, size, 0, (struct sockaddr *)&_server_address, sizeof(_server_address));
     printf("client (%s:%d) -> server (%s:%d) length %ld\n", inet_ntoa(_client_address.sin_addr), ntohs(_client_address.sin_port), inet_ntoa(_server_address.sin_addr), ntohs(_server_address.sin_port), size);
-    if (_dump_flag) {
+    if (_dump_buffer) {
         dump_buffer(buffer, size);
     }
     time(&_last_activity_time);
@@ -62,9 +64,9 @@ void UDPClient::send_to_server(const void *buffer, ssize_t size)
 
 void UDPClient::send_to_client(const void *buffer, ssize_t size)
 {
-    sendto(_main_socket, buffer, size, 0, (struct sockaddr *)&_client_address, sizeof(_client_address));
+    sendto(_server_socket, buffer, size, 0, (struct sockaddr *)&_client_address, sizeof(_client_address));
     printf("server (%s:%d) -> client (%s:%d) length %ld\n", inet_ntoa(_server_address.sin_addr), ntohs(_server_address.sin_port), inet_ntoa(_client_address.sin_addr), ntohs(_client_address.sin_port), size);
-    if (_dump_flag) {
+    if (_dump_buffer) {
         dump_buffer(buffer, size);
     }
     time(&_last_activity_time);
